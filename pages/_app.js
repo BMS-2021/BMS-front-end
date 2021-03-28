@@ -1,9 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable react/prop-types */
-/* eslint-disable react/react-in-jsx-scope */
+import React from 'react';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
+  React.useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector('#jss-server-side');
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+  }, []);
+
   return <Component {...pageProps} />;
 }
 

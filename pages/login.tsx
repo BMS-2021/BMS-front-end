@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,8 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+
+import { useForm } from 'react-hook-form';
 
 function Copyright() {
   return (
@@ -62,6 +64,26 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInSide(): ReactElement {
   const classes = useStyles();
 
+  const { handleSubmit, register, errors: inputError } = useForm();
+
+  const [remember, setRemember] = useState(false);
+
+  const onLogin = async ({
+    adminId,
+    password,
+  }: {
+    adminId: string;
+    password: string;
+  }): Promise<void> => {
+    const postData = {
+      id: adminId,
+      pw: password,
+      rem: remember,
+    };
+
+    console.log(postData);
+  };
+
   return (
     <Grid container component='main' className={classes.root}>
       <CssBaseline />
@@ -74,17 +96,26 @@ export default function SignInSide(): ReactElement {
           <Typography component='h1' variant='h5'>
             Sign in
           </Typography>
-          <form className={classes.form} noValidate>
+          <form
+            className={classes.form}
+            noValidate
+            onSubmit={handleSubmit(onLogin)}
+          >
             <TextField
               variant='outlined'
               margin='normal'
               required
               fullWidth
-              id='email'
-              label='Email Address'
-              name='email'
-              autoComplete='email'
+              id='adminId'
+              label='Admin ID'
+              name='adminId'
+              autoComplete='admin-id'
               autoFocus
+              inputRef={register({
+                required: true,
+              })}
+              error={Boolean(inputError.adminId)}
+              helperText={inputError.adminId ? 'Please Input Admin ID' : null}
             />
             <TextField
               variant='outlined'
@@ -96,9 +127,27 @@ export default function SignInSide(): ReactElement {
               type='password'
               id='password'
               autoComplete='current-password'
+              inputRef={register({
+                required: true,
+              })}
+              error={Boolean(inputError.password)}
+              helperText={
+                inputError.password ? 'Please Input Admin Password' : null
+              }
             />
             <FormControlLabel
-              control={<Checkbox value='remember' color='primary' />}
+              control={
+                <Checkbox
+                  value='remember'
+                  color='primary'
+                  onChange={(
+                    _event: React.ChangeEvent<HTMLInputElement>,
+                    checked: boolean
+                  ): void => {
+                    setRemember(checked);
+                  }}
+                />
+              }
               label='Remember me'
             />
             <Button
