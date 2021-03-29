@@ -9,7 +9,7 @@ import Hidden from '@material-ui/core/Hidden';
 import Navigator from '../Components/Navigator';
 import Header from '../Components/Header';
 import Copyright from '../Components/Copyright';
-import styles, { drawerWidth, theme } from '../styles/templateStyle';
+import styles, { drawerWidth, theme } from './templateStyle';
 import Head from 'next/head';
 
 export interface PaperbaseProps extends WithStyles<typeof styles> {

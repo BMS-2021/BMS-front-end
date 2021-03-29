@@ -4,9 +4,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,6 +17,8 @@ import {
   WithStyles,
 } from '@material-ui/core/styles';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { Button } from '@material-ui/core';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -53,6 +53,8 @@ interface HeaderProps extends WithStyles<typeof styles> {
 function Header(props: HeaderProps) {
   const { classes, pageTitle, onDrawerToggle } = props;
 
+  const router = useRouter();
+
   return (
     <React.Fragment>
       <Head>
@@ -75,24 +77,16 @@ function Header(props: HeaderProps) {
             </Hidden>
             <Grid item xs />
             <Grid item>
-              <Link className={classes.link} href='#' variant='body2'>
-                Go to docs
-              </Link>
-            </Grid>
-            <Grid item>
-              <Tooltip title='Alerts • No alerts'>
-                <IconButton color='inherit'>
-                  <NotificationsIcon />
-                </IconButton>
-              </Tooltip>
+              <Button onClick={() => router.push('login')}>Login</Button>
             </Grid>
             <Grid item>
               <Tooltip title='Please Login First'>
                 <IconButton
                   color='inherit'
                   className={classes.iconButtonAvatar}
+                  onClick={() => router.push('login')}
                 >
-                  <Avatar src='/static/images/avatar/1.jpg' alt='?' />
+                  <Avatar src={null} alt='?' />
                 </IconButton>
               </Tooltip>
             </Grid>
