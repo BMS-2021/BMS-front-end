@@ -5,8 +5,6 @@ import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
@@ -26,6 +24,7 @@ const styles = (theme: Theme) =>
   createStyles({
     secondaryBar: {
       zIndex: 0,
+      paddingBottom: theme.spacing(1),
     },
     menuButton: {
       marginLeft: -theme.spacing(1),
@@ -109,20 +108,6 @@ function Header(props: HeaderProps) {
             </Grid>
           </Grid>
         </Toolbar>
-      </AppBar>
-      <AppBar
-        component='div'
-        className={classes.secondaryBar}
-        color='primary'
-        position='static'
-        elevation={0}
-      >
-        <Tabs value={0} textColor='inherit'>
-          <Tab textColor='inherit' label='Users' />
-          <Tab textColor='inherit' label='Sign-in method' />
-          <Tab textColor='inherit' label='Templates' />
-          <Tab textColor='inherit' label='Usage' />
-        </Tabs>
       </AppBar>
     </React.Fragment>
   );
