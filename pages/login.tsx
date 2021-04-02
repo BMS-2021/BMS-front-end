@@ -1,10 +1,10 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
@@ -14,6 +14,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useForm } from 'react-hook-form';
+
+import { useRouter } from 'next/router';
 
 function Copyright() {
   return (
@@ -63,10 +65,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignInSide(): ReactElement {
   const classes = useStyles();
+  const router = useRouter();
 
   const { handleSubmit, register, errors: inputError } = useForm();
 
-  const [remember, setRemember] = useState(false);
+  // const [remember, setRemember] = useState(false);
 
   const onLogin = async ({
     adminId,
@@ -76,12 +79,27 @@ export default function SignInSide(): ReactElement {
     password: string;
   }): Promise<void> => {
     const postData = {
-      id: adminId,
-      pw: password,
-      rem: remember,
+      name: adminId,
+      password: password,
+      // rem: remember,
     };
 
-    console.log(postData);
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify(postData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status >= 400 && response.status < 500) {
+        const errMsg = await response.text();
+        alert(errMsg);
+      }
+    } else {
+      router.push('/');
+    }
   };
 
   return (
@@ -135,7 +153,7 @@ export default function SignInSide(): ReactElement {
                 inputError.password ? 'Please Input Admin Password' : null
               }
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={
                 <Checkbox
                   value='remember'
@@ -149,7 +167,7 @@ export default function SignInSide(): ReactElement {
                 />
               }
               label='Remember me'
-            />
+            /> */}
             <Button
               type='submit'
               fullWidth
