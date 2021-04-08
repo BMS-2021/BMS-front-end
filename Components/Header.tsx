@@ -17,6 +17,7 @@ import {
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Button } from '@material-ui/core';
+import { getUserStateContext } from '../utils/UserState';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -52,7 +53,25 @@ interface HeaderProps extends WithStyles<typeof styles> {
 function Header(props: HeaderProps) {
   const { classes, pageTitle, onDrawerToggle } = props;
 
+  const { state, dispatch } = getUserStateContext();
+
   const router = useRouter();
+
+  const displayAvatar = state.username ?? '?';
+  const tooltipText = state.username
+    ? `Hello, ${state.username}`
+    : 'Please login first!';
+  const buttonText = state.username ? 'Log Out' : 'Log In';
+
+  const logInOutAction = (): void => {
+    if (!state.username) {
+      router.push('login');
+    } else {
+      dispatch({
+        type: 'logout',
+      });
+    }
+  };
 
   return (
     <React.Fragment>
@@ -76,16 +95,15 @@ function Header(props: HeaderProps) {
             </Hidden>
             <Grid item xs />
             <Grid item>
-              <Button onClick={() => router.push('login')}>Login</Button>
+              <Button onClick={logInOutAction}>{buttonText}</Button>
             </Grid>
             <Grid item>
-              <Tooltip title='Please Login First'>
+              <Tooltip title={tooltipText}>
                 <IconButton
                   color='inherit'
                   className={classes.iconButtonAvatar}
-                  onClick={() => router.push('login')}
                 >
-                  <Avatar src={null} alt='?' />
+                  <Avatar src={null} alt={displayAvatar} />
                 </IconButton>
               </Tooltip>
             </Grid>

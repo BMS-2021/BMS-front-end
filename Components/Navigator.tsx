@@ -21,15 +21,42 @@ import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
 
 import { useRouter } from 'next/router';
 
+import { getUserStateContext } from '../utils/UserState';
+
 const categories = [
   {
     id: '功能列表',
     children: [
-      { id: 'query', name: '查询图书', icon: <DnsRoundedIcon /> },
-      { id: 'import', name: '导入图书', icon: <PeopleIcon /> },
-      { id: 'borrow', name: '借阅图书', icon: <PermMediaOutlinedIcon /> },
-      { id: 'return', name: '归还图书', icon: <PublicIcon /> },
-      { id: 'card', name: '卡片管理', icon: <SettingsEthernetIcon /> },
+      {
+        id: 'query',
+        name: '查询图书',
+        icon: <DnsRoundedIcon />,
+        loginRequired: false,
+      },
+      {
+        id: 'import',
+        name: '导入图书',
+        icon: <PeopleIcon />,
+        loginRequired: true,
+      },
+      {
+        id: 'borrow',
+        name: '借阅图书',
+        icon: <PermMediaOutlinedIcon />,
+        loginRequired: true,
+      },
+      {
+        id: 'return',
+        name: '归还图书',
+        icon: <PublicIcon />,
+        loginRequired: true,
+      },
+      {
+        id: 'card',
+        name: '卡片管理',
+        icon: <SettingsEthernetIcon />,
+        loginRequired: true,
+      },
     ],
   },
 ];
@@ -89,6 +116,8 @@ function Navigator(props: NavigatorProps) {
 
   const router = useRouter();
 
+  const { state } = getUserStateContext();
+
   return (
     <Drawer variant='permanent' {...other}>
       <List disablePadding>
@@ -120,7 +149,7 @@ function Navigator(props: NavigatorProps) {
                 {id}
               </ListItemText>
             </ListItem>
-            {children.map(({ id: childId, name, icon }) => (
+            {children.map(({ id: childId, name, icon, loginRequired }) => (
               <ListItem
                 key={childId}
                 button
@@ -132,6 +161,7 @@ function Navigator(props: NavigatorProps) {
                   setActiveListItem(childId);
                   router.push(childId);
                 }}
+                disabled={loginRequired && state.username === null}
               >
                 <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
                 <ListItemText

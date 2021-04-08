@@ -16,6 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
 
 import { useRouter } from 'next/router';
+import { getUserStateContext } from '../utils/UserState';
 
 function Copyright() {
   return (
@@ -69,7 +70,7 @@ export default function SignInSide(): ReactElement {
 
   const { handleSubmit, register, errors: inputError } = useForm();
 
-  // const [remember, setRemember] = useState(false);
+  const { dispatch } = getUserStateContext();
 
   const onLogin = async ({
     adminId,
@@ -98,6 +99,12 @@ export default function SignInSide(): ReactElement {
         alert(errMsg);
       }
     } else {
+      dispatch({
+        type: 'login',
+        username: adminId,
+        password: password,
+      });
+
       router.push('/');
     }
   };
@@ -153,21 +160,6 @@ export default function SignInSide(): ReactElement {
                 inputError.password ? 'Please Input Admin Password' : null
               }
             />
-            {/* <FormControlLabel
-              control={
-                <Checkbox
-                  value='remember'
-                  color='primary'
-                  onChange={(
-                    _event: React.ChangeEvent<HTMLInputElement>,
-                    checked: boolean
-                  ): void => {
-                    setRemember(checked);
-                  }}
-                />
-              }
-              label='Remember me'
-            /> */}
             <Button
               type='submit'
               fullWidth
