@@ -14,7 +14,6 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core/styles';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Button } from '@material-ui/core';
 import { getUserStateContext } from '../utils/UserState';
@@ -75,9 +74,6 @@ function Header(props: HeaderProps) {
 
   return (
     <React.Fragment>
-      <Head>
-        <title>{pageTitle}</title>
-      </Head>
       <AppBar color='primary' position='sticky' elevation={0}>
         <Toolbar>
           <Grid container spacing={1} alignItems='center'>

@@ -36,7 +36,7 @@ function Template(props: PaperbaseProps): ReactElement {
   return (
     <ThemeProvider theme={theme}>
       <Head>
-        <title>{pageTitle}</title>
+        <title>{pageTitle + ' - 图书管理系统'}</title>
       </Head>
       <div className={classes.root}>
         <CssBaseline />
