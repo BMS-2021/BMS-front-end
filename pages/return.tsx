@@ -6,7 +6,11 @@ import Content from '../Components/Content';
 export default function returnBook(): ReactElement {
   return (
     <>
-      <Template ContentComponent={<Content />} pageTitle={'归还图书'} />
+      <Template
+        ContentComponent={<Content />}
+        pageTitle={'归还图书'}
+        loginRequired
+      />
     </>
   );
 }

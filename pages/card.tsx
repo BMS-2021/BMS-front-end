@@ -6,7 +6,11 @@ import Content from '../Components/Content';
 export default function borrow(): ReactElement {
   return (
     <>
-      <Template ContentComponent={<Content />} pageTitle={'卡片管理'} />
+      <Template
+        ContentComponent={<Content />}
+        pageTitle={'卡片管理'}
+        loginRequired
+      />
     </>
   );
 }

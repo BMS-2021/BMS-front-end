@@ -11,19 +11,27 @@ import Header from '../Components/Header';
 import Copyright from '../Components/Copyright';
 import styles, { drawerWidth, theme } from './templateStyle';
 import Head from 'next/head';
+import LoginCheck from './Contents/LoginCheck';
 
 export interface PaperbaseProps extends WithStyles<typeof styles> {
   ContentComponent: ReactElement;
   pageTitle: string;
+  loginRequired?: boolean;
 }
 
 function Template(props: PaperbaseProps): ReactElement {
-  const { classes, ContentComponent, pageTitle } = props;
+  const { classes, ContentComponent, pageTitle, loginRequired } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const innerContent = loginRequired ? (
+    <LoginCheck>{ContentComponent}</LoginCheck>
+  ) : (
+    ContentComponent
+  );
 
   return (
     <ThemeProvider theme={theme}>
@@ -51,7 +59,7 @@ function Template(props: PaperbaseProps): ReactElement {
         </nav>
         <div className={classes.app}>
           <Header pageTitle={pageTitle} onDrawerToggle={handleDrawerToggle} />
-          <main className={classes.main}>{ContentComponent}</main>
+          <main className={classes.main}>{innerContent}</main>
           <footer className={classes.footer}>
             <Copyright />
           </footer>
