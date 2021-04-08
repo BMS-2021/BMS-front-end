@@ -105,7 +105,7 @@ export default function SignInSide(): ReactElement {
         password: password,
       });
 
-      router.push('/');
+      router.back();
     }
   };
 
