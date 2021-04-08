@@ -126,7 +126,11 @@ function Navigator(props: NavigatorProps) {
         >
           {navName}
         </ListItem>
-        <ListItem className={clsx(classes.item, classes.itemCategory)}>
+        <ListItem
+          className={clsx(classes.item, classes.itemCategory)}
+          button
+          onClick={() => router.push('/')}
+        >
           <ListItemIcon className={classes.itemIcon}>
             <HomeIcon />
           </ListItemIcon>
@@ -135,7 +139,7 @@ function Navigator(props: NavigatorProps) {
               primary: classes.itemPrimary,
             }}
           >
-            Project Overview
+            {'返回首页'}
           </ListItemText>
         </ListItem>
         {categories.map(({ id, children }) => (
