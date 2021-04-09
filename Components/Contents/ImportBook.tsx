@@ -57,17 +57,34 @@ export default function ImportBook(): ReactElement {
     author: string;
     category: string;
     press: string;
-    price: number;
-    stock: number;
     title: string;
-    total: number;
-    year: number;
+    // actually numbers ↓
+    price: string;
+    stock: string;
+    total: string;
+    year: string;
   }): Promise<void> => {
+    for (const prop in formData) {
+      formData[prop] = (formData[prop] as string).trim();
+      if ((formData[prop] as string).length < 1) {
+        setSnackState((draft) => {
+          draft.open = true;
+          draft.message = '请不要只输入空白值！';
+        });
+        return;
+      }
+    }
+
     const { success, data } = await neofetch({
       url: '/book',
       method: 'PUT',
-      jsonData: { ...formData },
-      contentType: 'application/json',
+      jsonData: {
+        ...formData,
+        price: Number(formData.price),
+        stock: Number(formData.stock),
+        total: Number(formData.total),
+        year: Number(formData.year),
+      },
     });
 
     if (!success) {

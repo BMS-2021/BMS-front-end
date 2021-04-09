@@ -1,11 +1,7 @@
+/* eslint-disable @typescript-eslint/indent */
 const apiBase = '/api';
 
-const neofetch = async (fetchParams: {
-  url: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  jsonData: unknown;
-  contentType: string;
-}): Promise<
+type fetchResult =
   | {
       success: true;
       data: unknown;
@@ -13,9 +9,22 @@ const neofetch = async (fetchParams: {
   | {
       success: false;
       data: string | null;
-    }
-> => {
-  const { url, method, jsonData, contentType } = fetchParams;
+    };
+
+const neofetch = async (fetchParams: {
+  url: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  jsonData?: unknown;
+  contentType?: string;
+}): Promise<fetchResult> => {
+  const defaultParams = {
+    method: 'GET',
+    contentType: 'application/json',
+  };
+
+  const neoParams = { ...defaultParams, ...fetchParams };
+
+  const { url, method, jsonData, contentType } = neoParams;
   const response = await fetch(apiBase + url, {
     method: method,
     body: JSON.stringify(jsonData),

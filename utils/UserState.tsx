@@ -1,16 +1,15 @@
+/* eslint-disable @typescript-eslint/indent */
 import React, { createContext, useContext } from 'react';
 import { useImmerReducer, Reducer } from 'use-immer';
 
 export type userStateType = {
   username: string | null;
-  password: string | null;
 };
 
 export type userActionType =
   | {
       type: 'login';
       username: string | null;
-      password?: string | null;
     }
   | {
       type: 'logout';
@@ -25,17 +24,15 @@ export type dispatcherType = {
 
 const initialState: userStateType = {
   username: null,
-  password: null,
 };
 
 const stateReducer: userReducerType = (draft, action) => {
   switch (action.type) {
     case 'login':
       draft.username = action.username;
-      draft.password = action.password;
       break;
     case 'logout':
-      draft.username = draft.password = null;
+      draft.username = null;
       break;
     default:
       throw 'unknow action!';
