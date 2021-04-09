@@ -102,7 +102,6 @@ export default function SignInSide(): ReactElement {
       dispatch({
         type: 'login',
         username: adminId,
-        password: password,
       });
 
       router.back();
