@@ -1,9 +1,8 @@
 import { Link } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect } from 'react';
-import neofetch from '../../utils/neofetch';
+import React, { ReactElement } from 'react';
 
-import { getUserStateContext } from '../../utils/UserState';
+import { getUserStateContext } from '../utils/UserState';
 
 export const DisplayMask = (): ReactElement => {
   const router = useRouter();
@@ -26,22 +25,6 @@ export default function LoginCheck({
   const { state, dispatch } = getUserStateContext();
 
   const displayContent = state.username ? children : <DisplayMask />;
-
-  /* check if logined */
-  // useEffect(() => {
-  //   (async () => {
-  //     if (!state.username) {
-  //       const { success, data } = await neofetch({ url: '/login' });
-  //       if (!success) return;
-  //       else {
-  //         dispatch({
-  //           type: 'login',
-  //           username: (data as { username: string }).username,
-  //         });
-  //       }
-  //     }
-  //   })();
-  // }, [state.username]);
 
   return <>{displayContent}</>;
 }

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function BorrowContent(): ReactElement {
+export default function BorrowBook(): ReactElement {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [cardIdInput, setCardIdInput] = React.useState('');

@@ -1,12 +1,12 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 
 import Template from '../Components/Template';
-import Content from '../Components/Content';
+import QueryBook from '../Components/Contents/QueryBook';
 
 export default function query(): ReactElement {
   return (
     <>
-      <Template ContentComponent={<Content />} pageTitle={'查询图书'} />
+      <Template ContentComponent={<QueryBook />} pageTitle={'查询图书'} />
     </>
   );
 }

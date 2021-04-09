@@ -50,7 +50,6 @@ export default function ImportBook(): ReactElement {
     { name: 'year', label: '年份', type: 'number' },
     { name: 'price', label: '价格', type: 'text', pattern: /^\d+(\.\d+\d?)?$/ }, // TODO: check decimal
     { name: 'total', label: '总量', type: 'number' },
-    { name: 'stock', label: '库存', type: 'number' },
   ];
 
   const onSubmit = async (formData: {
@@ -60,7 +59,6 @@ export default function ImportBook(): ReactElement {
     title: string;
     // actually numbers ↓
     price: string;
-    stock: string;
     total: string;
     year: string;
   }): Promise<void> => {
@@ -81,7 +79,6 @@ export default function ImportBook(): ReactElement {
       jsonData: {
         ...formData,
         price: Number(formData.price),
-        stock: Number(formData.stock),
         total: Number(formData.total),
         year: Number(formData.year),
       },

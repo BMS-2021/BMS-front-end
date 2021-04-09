@@ -39,7 +39,10 @@ const neofetch = async (fetchParams: {
       data: await response.json(),
     };
   } else if (response.status == 401) {
-    return await neofetch({ url: '/login', ...fetchParams });
+    return {
+      success: false,
+      data: '登录信息已过期, 请重新登录',
+    };
   } else if (response.status >= 400 && response.status < 500) {
     return {
       success: false,

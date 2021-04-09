@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import {
   ThemeProvider,
   withStyles,
@@ -11,7 +11,9 @@ import Header from '../Components/Header';
 import Copyright from '../Components/Copyright';
 import styles, { drawerWidth, theme } from './templateStyle';
 import Head from 'next/head';
-import LoginCheck from './Contents/LoginCheck';
+import LoginCheck from './LoginCheck';
+import { getUserStateContext } from '../utils/UserState';
+import neofetch from '../utils/neofetch';
 
 export interface PaperbaseProps extends WithStyles<typeof styles> {
   ContentComponent: ReactElement;
@@ -22,6 +24,24 @@ export interface PaperbaseProps extends WithStyles<typeof styles> {
 function Template(props: PaperbaseProps): ReactElement {
   const { classes, ContentComponent, pageTitle, loginRequired } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const { state, dispatch } = getUserStateContext();
+
+  useEffect(() => {
+    (async () => {
+      if (!state.username) {
+        const { success, data } = await neofetch({ url: '/login' });
+        if (!success) {
+          alert(data);
+        } else {
+          dispatch({
+            type: 'login',
+            username: (data as { name: string }).name,
+          });
+        }
+      }
+    })();
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
