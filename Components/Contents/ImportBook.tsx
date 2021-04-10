@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import neofetch from '../../utils/neofetch';
 import { TextField, Button, Container } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
+import { requiredNotNull } from '../../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -93,7 +94,7 @@ export default function ImportBook(): ReactElement {
       label={label}
       name={name}
       inputRef={register({
-        required: true,
+        ...requiredNotNull,
         pattern,
       })}
       error={Boolean(inputError[name])}

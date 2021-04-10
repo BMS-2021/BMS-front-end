@@ -19,6 +19,7 @@ import { useRouter } from 'next/router';
 import { getUserStateContext } from '../utils/UserState';
 import { useSnackbar } from 'notistack';
 import Head from 'next/head';
+import { requiredNotNull } from '../utils/utils';
 
 function Copyright() {
   return (
@@ -148,9 +149,7 @@ export default function SignInSide(): ReactElement {
                 name='adminId'
                 autoComplete='admin-id'
                 autoFocus
-                inputRef={register({
-                  required: true,
-                })}
+                inputRef={register(requiredNotNull)}
                 error={Boolean(inputError.adminId)}
                 helperText={inputError.adminId ? 'Please Input Admin ID' : null}
               />
@@ -164,9 +163,7 @@ export default function SignInSide(): ReactElement {
                 type='password'
                 id='password'
                 autoComplete='current-password'
-                inputRef={register({
-                  required: true,
-                })}
+                inputRef={register(requiredNotNull)}
                 error={Boolean(inputError.password)}
                 helperText={
                   inputError.password ? 'Please Input Admin Password' : null
