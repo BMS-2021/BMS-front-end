@@ -71,12 +71,10 @@ export default function CardManagement(): ReactElement {
 
   const onDelete = async ({ cardId }: { cardId: string }) => {
     // card id is number!
-    const cardNumber = Number(cardId);
 
     const { success, data } = await neofetch({
-      url: '/card',
+      url: `/card?id=${cardId}`,
       method: 'DELETE',
-      jsonData: { id: cardNumber },
     });
 
     // use snackbar to inform user
@@ -160,7 +158,21 @@ export default function CardManagement(): ReactElement {
         </TextField>
       </>
     ),
-    '-': <></>,
+    '-': (
+      <>
+        <TextField
+          variant='outlined'
+          className={classes.textField}
+          fullWidth
+          id='cardId'
+          name='cardId'
+          label='卡号'
+          inputRef={register({ ...requiredNotNull })}
+          error={errors.cardId}
+          helperText={errors.cardId ? '卡号不能为空~' : null}
+        />
+      </>
+    ),
   };
 
   const mainForm = (
