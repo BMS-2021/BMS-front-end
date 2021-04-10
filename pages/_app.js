@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable react/prop-types */
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import '../styles/globals.css';
 import UserState from '../utils/UserState';
@@ -15,9 +16,15 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
-      <UserState>
-        <Component {...pageProps} />
-      </UserState>
+      <SnackbarProvider
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        maxSnack={1}
+        autoHideDuration={1500}
+      >
+        <UserState>
+          <Component {...pageProps} />
+        </UserState>
+      </SnackbarProvider>
     </>
   );
 }

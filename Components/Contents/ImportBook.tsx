@@ -2,8 +2,8 @@ import React, { ReactElement } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
 import neofetch from '../../utils/neofetch';
-import { Snackbar, TextField, Button, Container } from '@material-ui/core';
-import { useImmer } from 'use-immer';
+import { TextField, Button, Container } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -27,20 +27,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface SnackState {
-  open: boolean;
-  message: string;
-}
-
 export default function ImportBook(): ReactElement {
   const classes = useStyles();
 
   const { handleSubmit, register, errors: inputError } = useForm();
 
-  const [snackState, setSnackState] = useImmer<SnackState>({
-    open: false,
-    message: '',
-  });
+  const { enqueueSnackbar } = useSnackbar();
 
   const formParams = [
     { name: 'title', label: '书名', type: 'text' },
@@ -65,35 +57,28 @@ export default function ImportBook(): ReactElement {
     for (const prop in formData) {
       formData[prop] = (formData[prop] as string).trim();
       if ((formData[prop] as string).length < 1) {
-        setSnackState((draft) => {
-          draft.open = true;
-          draft.message = '请不要只输入空白值！';
-        });
+        enqueueSnackbar('不可以只输入空白值哟~');
         return;
       }
     }
 
+    const jsonData = {
+      ...formData,
+      price: Number(formData.price),
+      total: Number(formData.total),
+      year: Number(formData.year),
+    };
+
     const { success, data } = await neofetch({
       url: '/book',
       method: 'PUT',
-      jsonData: {
-        ...formData,
-        price: Number(formData.price),
-        total: Number(formData.total),
-        year: Number(formData.year),
-      },
+      jsonData: jsonData,
     });
 
     if (!success) {
-      setSnackState((draft) => {
-        draft.open = true;
-        draft.message = data as string;
-      });
+      enqueueSnackbar(data as string);
     } else {
-      setSnackState((draft) => {
-        draft.open = true;
-        draft.message = 'Success!';
-      });
+      enqueueSnackbar('导入成功~');
     }
   };
 
@@ -119,18 +104,6 @@ export default function ImportBook(): ReactElement {
 
   return (
     <>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={snackState.open}
-        onClose={() =>
-          setSnackState((draft) => {
-            draft.open = false;
-          })
-        }
-        autoHideDuration={2000}
-        message={snackState.message}
-        key={snackState.message}
-      ></Snackbar>
       <Container maxWidth='sm' className={classes.container}>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           {formFields}

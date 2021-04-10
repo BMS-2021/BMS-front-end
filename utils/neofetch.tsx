@@ -34,9 +34,16 @@ const neofetch = async (fetchParams: {
   });
 
   if (response.ok) {
+    let respJson: unknown;
+    try {
+      respJson = await response.json();
+    } catch (e) {
+      respJson = null;
+    }
+
     return {
       success: true,
-      data: await response.json(),
+      data: respJson,
     };
   } else if (response.status == 401) {
     return {

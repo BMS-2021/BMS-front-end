@@ -14,6 +14,7 @@ import Head from 'next/head';
 import LoginCheck from './LoginCheck';
 import { getUserStateContext } from '../utils/UserState';
 import neofetch from '../utils/neofetch';
+import { useSnackbar } from 'notistack';
 
 export interface PaperbaseProps extends WithStyles<typeof styles> {
   ContentComponent: ReactElement;
@@ -27,12 +28,14 @@ function Template(props: PaperbaseProps): ReactElement {
 
   const { state, dispatch } = getUserStateContext();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     (async () => {
       if (!state.username) {
         const { success, data } = await neofetch({ url: '/login' });
         if (!success) {
-          alert(data);
+          enqueueSnackbar(data as string);
         } else {
           dispatch({
             type: 'login',

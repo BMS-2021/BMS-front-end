@@ -17,6 +17,8 @@ import { useForm } from 'react-hook-form';
 
 import { useRouter } from 'next/router';
 import { getUserStateContext } from '../utils/UserState';
+import { useSnackbar } from 'notistack';
+import Head from 'next/head';
 
 function Copyright() {
   return (
@@ -72,6 +74,8 @@ export default function SignInSide(): ReactElement {
 
   const { dispatch } = getUserStateContext();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const onLogin = async ({
     adminId,
     password,
@@ -96,7 +100,12 @@ export default function SignInSide(): ReactElement {
     if (!response.ok) {
       if (response.status >= 400 && response.status < 500) {
         const errMsg = await response.text();
-        alert(errMsg);
+
+        enqueueSnackbar(
+          response.status === 403 ? '用户名或密码错误, 请重试~' : errMsg
+        );
+      } else {
+        enqueueSnackbar('登录异常, 请重新尝试或联系管理员~');
       }
     } else {
       dispatch({
@@ -109,71 +118,76 @@ export default function SignInSide(): ReactElement {
   };
 
   return (
-    <Grid container component='main' className={classes.root}>
-      <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component='h1' variant='h5'>
-            Sign in
-          </Typography>
-          <form
-            className={classes.form}
-            noValidate
-            onSubmit={handleSubmit(onLogin)}
-          >
-            <TextField
-              variant='outlined'
-              margin='normal'
-              required
-              fullWidth
-              id='adminId'
-              label='Admin ID'
-              name='adminId'
-              autoComplete='admin-id'
-              autoFocus
-              inputRef={register({
-                required: true,
-              })}
-              error={Boolean(inputError.adminId)}
-              helperText={inputError.adminId ? 'Please Input Admin ID' : null}
-            />
-            <TextField
-              variant='outlined'
-              margin='normal'
-              required
-              fullWidth
-              name='password'
-              label='Password'
-              type='password'
-              id='password'
-              autoComplete='current-password'
-              inputRef={register({
-                required: true,
-              })}
-              error={Boolean(inputError.password)}
-              helperText={
-                inputError.password ? 'Please Input Admin Password' : null
-              }
-            />
-            <Button
-              type='submit'
-              fullWidth
-              variant='contained'
-              color='primary'
-              className={classes.submit}
+    <>
+      <Head>
+        <title>登录 - 图书管理系统</title>
+      </Head>
+      <Grid container component='main' className={classes.root}>
+        <CssBaseline />
+        <Grid item xs={false} sm={4} md={7} className={classes.image} />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component='h1' variant='h5'>
+              Sign in
+            </Typography>
+            <form
+              className={classes.form}
+              noValidate
+              onSubmit={handleSubmit(onLogin)}
             >
-              Sign In
-            </Button>
-            <Box mt={5}>
-              <Copyright />
-            </Box>
-          </form>
-        </div>
+              <TextField
+                variant='outlined'
+                margin='normal'
+                required
+                fullWidth
+                id='adminId'
+                label='Admin ID'
+                name='adminId'
+                autoComplete='admin-id'
+                autoFocus
+                inputRef={register({
+                  required: true,
+                })}
+                error={Boolean(inputError.adminId)}
+                helperText={inputError.adminId ? 'Please Input Admin ID' : null}
+              />
+              <TextField
+                variant='outlined'
+                margin='normal'
+                required
+                fullWidth
+                name='password'
+                label='Password'
+                type='password'
+                id='password'
+                autoComplete='current-password'
+                inputRef={register({
+                  required: true,
+                })}
+                error={Boolean(inputError.password)}
+                helperText={
+                  inputError.password ? 'Please Input Admin Password' : null
+                }
+              />
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                color='primary'
+                className={classes.submit}
+              >
+                Sign In
+              </Button>
+              <Box mt={5}>
+                <Copyright />
+              </Box>
+            </form>
+          </div>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 }
