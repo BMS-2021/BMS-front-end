@@ -1,13 +1,13 @@
 import React, { ReactElement } from 'react';
 
 import Template from '../Components/Template';
-import Content from '../Components/Content';
+import BorrowBook from '../Components/Contents/BorrowBook';
 
 export default function borrow(): ReactElement {
   return (
     <>
       <Template
-        ContentComponent={<Content />}
+        ContentComponent={<BorrowBook actionUrl={'/borrow'} />}
         pageTitle={'借阅图书'}
         loginRequired
       />

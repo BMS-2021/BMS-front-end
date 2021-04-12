@@ -12,7 +12,7 @@ const IndexPage = () => {
       marginTop: theme.spacing(6),
       width: '100%',
       fontSize: 400,
-      color: '#cccccc',
+      color: '#e0e0e0',
     },
   }));
 

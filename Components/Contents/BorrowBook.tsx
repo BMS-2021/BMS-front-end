@@ -7,6 +7,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { useImmer } from 'use-immer';
+import { Paper } from '@material-ui/core';
+import BookTable, { BookData } from '../BookTable';
+import neofetch from '../../utils/neofetch';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,20 +17,47 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     button: {
-      marginRight: theme.spacing(1),
+      margin: theme.spacing(0, 5, 0),
+    },
+    buttons: {
+      width: '100%',
+      display: 'flex',
+      alignItems: '',
+      justifyContent: 'center',
     },
     instructions: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
+    paper: {
+      '@media (min-width: 800px)': {
+        width: '70%',
+        marginLeft: '15%',
+      },
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: theme.spacing(4, 0, 4),
+      padding: theme.spacing(4, 0, 4),
+      flexWrap: 'wrap',
+    },
+    input: {
+      margin: theme.spacing(2, 0, 2),
+    },
   })
 );
 
-export default function BorrowBook(): ReactElement {
+export default function BorrowBook({
+  actionUrl,
+}: {
+  actionUrl: string;
+}): ReactElement {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [cardIdInput, setCardIdInput] = React.useState('');
   const [bookIdInput, setBookIdInput] = React.useState('');
+  const [bookRows, setBookRows] = React.useState<BookData[]>([]);
+
   const stepData = [
     {
       name: '输入借书证号',
@@ -37,6 +67,7 @@ export default function BorrowBook(): ReactElement {
             输入借书证号以进入下一步：
           </Typography>
           <TextField
+            className={classes.input}
             label='借书证号'
             variant='outlined'
             onChange={(e) => setCardIdInput(e.target.value)}
@@ -44,8 +75,14 @@ export default function BorrowBook(): ReactElement {
         </>
       ),
       okAction: async () => {
-        console.log(cardIdInput);
-        //let data = await fetch('getBookByCardId', 'GET', {cardId})
+        // console.log(cardIdInput);
+        const { success, data } = await neofetch({
+          url: `/borrow?cardId=${Number(cardIdInput)}`,
+        });
+
+        if (!success) throw data as string;
+
+        setBookRows((data ?? []) as BookData[]);
       },
     },
     {
@@ -56,6 +93,7 @@ export default function BorrowBook(): ReactElement {
             输入书号以进入下一步：
           </Typography>
           <TextField
+            className={classes.input}
             label='书号'
             variant='outlined'
             onChange={(e) => setBookIdInput(e.target.value)}
@@ -66,11 +104,12 @@ export default function BorrowBook(): ReactElement {
         //let data = await fetch('getStockByCardId', 'GET', {bookId})
         console.log(bookIdInput);
       },
+      dataDisplay: '<BookTable rows={bookRows} />',
     },
     {
       name: '确认信息',
       content: (
-        <Typography className={classes.instructions}>请确认借阅信息</Typography>
+        <Typography className={classes.instructions}>请确认信息</Typography>
       ),
       okAction: async () => {
         throw 233;
@@ -131,18 +170,18 @@ export default function BorrowBook(): ReactElement {
           );
         })}
       </Stepper>
-      <div>
+      <Paper elevation={3} className={classes.paper}>
         {activeStep === steps.length ? (
-          <div>
+          <>
             <Typography className={classes.instructions}>借书完成~</Typography>
             <Button onClick={handleReset} className={classes.button}>
               再借一本
             </Button>
-          </div>
+          </>
         ) : (
-          <div>
+          <>
             {stepData[activeStep].content}
-            <div>
+            <div className={classes.buttons}>
               <Button
                 disabled={activeStep === 0}
                 onClick={handleBack}
@@ -160,9 +199,10 @@ export default function BorrowBook(): ReactElement {
                 {activeStep === steps.length - 1 ? '确认' : '下一步'}
               </Button>
             </div>
-          </div>
+          </>
         )}
-      </div>
+      </Paper>
+      {stepData[activeStep].dataDisplay}
     </div>
   );
 }
