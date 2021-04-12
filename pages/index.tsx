@@ -1,11 +1,26 @@
 // import Head from 'next/head';
 import { ReactElement } from 'react';
-import Content from '../Components/Content';
+import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
+// import Content from '../Components/Content';
 import Template from '../Components/Template';
+import { makeStyles } from '@material-ui/core';
 // import styles from '../styles/Home.module.css';
 
+const IndexPage = () => {
+  const classes = makeStyles((theme) => ({
+    emoji: {
+      marginTop: theme.spacing(6),
+      width: '100%',
+      fontSize: 400,
+      color: '#cccccc',
+    },
+  }));
+
+  return <EmojiEmotionsIcon className={classes().emoji} />;
+};
+
 export default function Home(): ReactElement {
-  return <Template ContentComponent={<Content />} pageTitle='首页' />;
+  return <Template ContentComponent={<IndexPage />} pageTitle='首页' />;
 }
 
 // export default function Home(): ReactElement {
