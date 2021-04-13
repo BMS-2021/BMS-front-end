@@ -15,6 +15,7 @@ const neofetch = async (fetchParams: {
   url: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   jsonData?: unknown;
+  body?: FormData;
   contentType?: string;
 }): Promise<fetchResult> => {
   const defaultParams = {
@@ -24,13 +25,11 @@ const neofetch = async (fetchParams: {
 
   const neoParams = { ...defaultParams, ...fetchParams };
 
-  const { url, method, jsonData, contentType } = neoParams;
+  const { url, method, jsonData, body, contentType } = neoParams;
   const response = await fetch(apiBase + url, {
     method: method,
-    body: JSON.stringify(jsonData),
-    headers: {
-      'Content-Type': contentType,
-    },
+    body: body ?? JSON.stringify(jsonData),
+    headers: contentType ? { 'Content-Type': contentType } : {},
   });
 
   if (response.ok) {

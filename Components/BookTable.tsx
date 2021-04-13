@@ -1,4 +1,4 @@
-import Paper from '@material-ui/core/Paper';
+// import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
+import { Paper } from '@material-ui/core';
 
 interface Column {
   id:
@@ -54,6 +55,12 @@ const useStyles = makeStyles({
   },
   container: {
     maxHeight: 440,
+    overflowX: 'auto',
+  },
+  paper: {
+    width: '100%',
+    overflowX: 'auto',
+    flexShrink: 0,
   },
 });
 
@@ -65,7 +72,7 @@ export default function BookTable({
   const classes = useStyles();
 
   return (
-    <Paper elevation={3} className={classes.root}>
+    <Paper>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>

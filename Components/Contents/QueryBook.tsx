@@ -2,6 +2,7 @@ import {
   Button,
   Grid,
   makeStyles,
+  Paper,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -15,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
   },
   filterGrid: {
-    margin: theme.spacing(0, 2, 0),
+    margin: theme.spacing(0, 0, 0),
   },
   inline: {
     display: 'inline',

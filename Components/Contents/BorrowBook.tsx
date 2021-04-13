@@ -10,6 +10,7 @@ import { useImmer } from 'use-immer';
 import { Paper } from '@material-ui/core';
 import BookTable, { BookData } from '../BookTable';
 import neofetch from '../../utils/neofetch';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,6 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
     instructions: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
+      width: '100%',
+      textAlign: 'center',
     },
     paper: {
       '@media (min-width: 800px)': {
@@ -58,6 +61,8 @@ export default function BorrowBook({
   const [bookIdInput, setBookIdInput] = React.useState('');
   const [bookRows, setBookRows] = React.useState<BookData[]>([]);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const stepData = [
     {
       name: '输入借书证号',
@@ -67,7 +72,10 @@ export default function BorrowBook({
             输入借书证号以进入下一步：
           </Typography>
           <TextField
+            key='cardId'
             className={classes.input}
+            type='number'
+            value={cardIdInput}
             label='借书证号'
             variant='outlined'
             onChange={(e) => setCardIdInput(e.target.value)}
@@ -75,6 +83,7 @@ export default function BorrowBook({
         </>
       ),
       okAction: async () => {
+        if (cardIdInput.length < 1) throw '请输入借书证号~';
         // console.log(cardIdInput);
         const { success, data } = await neofetch({
           url: `/borrow?cardId=${Number(cardIdInput)}`,
@@ -94,6 +103,9 @@ export default function BorrowBook({
           </Typography>
           <TextField
             className={classes.input}
+            key='bookId'
+            type='number'
+            value={bookIdInput}
             label='书号'
             variant='outlined'
             onChange={(e) => setBookIdInput(e.target.value)}
@@ -101,18 +113,42 @@ export default function BorrowBook({
         </>
       ),
       okAction: async () => {
-        //let data = await fetch('getStockByCardId', 'GET', {bookId})
-        console.log(bookIdInput);
+        if (bookIdInput.length < 1) throw '请输入书号';
       },
-      dataDisplay: '<BookTable rows={bookRows} />',
+      dataDisplay: <BookTable rows={bookRows} />,
     },
     {
       name: '确认信息',
       content: (
-        <Typography className={classes.instructions}>请确认信息</Typography>
+        <>
+          <Typography className={classes.instructions}>请确认信息</Typography>
+          <Typography className={classes.instructions}>
+            借书证号: {cardIdInput}
+          </Typography>
+          <Typography className={classes.instructions}>
+            书号: {bookIdInput}
+          </Typography>
+        </>
       ),
       okAction: async () => {
-        throw 233;
+        // throw 233;
+        const { success, data } = await neofetch({
+          url: actionUrl,
+          method: 'POST',
+          jsonData: {
+            bookId: Number(bookIdInput),
+            cardId: Number(cardIdInput),
+          },
+        });
+
+        if (!success) {
+          enqueueSnackbar(data as string);
+          throw data as string;
+        } else {
+          enqueueSnackbar('借书成功!');
+          setBookIdInput('');
+          setCardIdInput('');
+        }
         // let data = await fetch('borrowBook', 'POST', {cardId, bookId})
       },
     },
@@ -129,8 +165,12 @@ export default function BorrowBook({
   const handleNext = async () => {
     try {
       await stepData[activeStep].okAction();
+      setIsErrorList((draft) => {
+        draft.errors[activeStep] = false;
+      });
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     } catch (e) {
+      enqueueSnackbar(e);
       setIsErrorList((draft) => {
         draft.errors[activeStep] = true;
       });
@@ -165,7 +205,7 @@ export default function BorrowBook({
           }
           return (
             <Step key={name} {...stepProps}>
-              <StepLabel {...labelProps}>{name}</StepLabel>
+              <StepLabel error={isErrorList.errors[index]}>{name}</StepLabel>
             </Step>
           );
         })}
@@ -194,7 +234,6 @@ export default function BorrowBook({
                 color='primary'
                 onClick={handleNext}
                 className={classes.button}
-                disabled={isErrorList.errors[activeStep]}
               >
                 {activeStep === steps.length - 1 ? '确认' : '下一步'}
               </Button>
@@ -202,7 +241,7 @@ export default function BorrowBook({
           </>
         )}
       </Paper>
-      {stepData[activeStep].dataDisplay}
+      {stepData[activeStep]?.dataDisplay}
     </div>
   );
 }

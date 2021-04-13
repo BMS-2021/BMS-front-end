@@ -1,10 +1,11 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
 import neofetch from '../../utils/neofetch';
 import { TextField, Button, Container } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { requiredNotNull } from '../../utils/utils';
+import UploadFileModal from '../UploadFileModal';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -14,17 +15,26 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    flexWrap: 'wrap',
     boxShadow: theme.shadows[6],
   },
   form: {
     width: '70%',
     margin: theme.spacing(3, 0, 1),
   },
-  submit: {
+  button: {
+    width: '40%',
+    marginLeft: '30%',
     marginTop: theme.spacing(5),
-    marginLeft: '40%',
-    width: '20%',
     fontSize: theme.typography.fontSize * 1.1,
+  },
+  fileWrapper: {
+    width: '100%',
+  },
+  fileButton: {
+    width: '40%',
+    marginLeft: '30%',
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -103,6 +113,8 @@ export default function ImportBook(): ReactElement {
     />
   ));
 
+  const [fileModalOpen, setFileModalOpen] = useState(false);
+
   return (
     <>
       <Container maxWidth='sm' className={classes.container}>
@@ -112,12 +124,28 @@ export default function ImportBook(): ReactElement {
             type='submit'
             variant='contained'
             color='primary'
-            className={classes.submit}
+            className={classes.button}
           >
             导入
           </Button>
         </form>
+        <div className={classes.fileWrapper}>
+          <Button
+            variant='text'
+            className={classes.fileButton}
+            onClick={() => setFileModalOpen(true)}
+          >
+            从文件批量导入...
+          </Button>
+        </div>
       </Container>
+      <UploadFileModal
+        classes={null}
+        id={'file'}
+        keepMounted={false}
+        open={fileModalOpen}
+        onClose={() => setFileModalOpen(false)}
+      />
     </>
   );
 }
