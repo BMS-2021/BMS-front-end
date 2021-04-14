@@ -87,19 +87,23 @@ export default function CardManagement(): ReactElement {
 
   const links = [
     {
-      key: 'ins',
+      key: '+',
       label: '添加借书证',
       onSelect: () => setOperation('+'),
     },
     {
-      key: 'del',
+      key: '-',
       label: '删除借书证',
       onSelect: () => setOperation('-'),
     },
   ];
 
   const breadcrumbs = links.map(({ key, label, onSelect }) => (
-    <Link key={key} color='inherit' onClick={onSelect}>
+    <Link
+      key={key}
+      color={key === operation ? 'primary' : 'inherit'}
+      onClick={onSelect}
+    >
       {label}
     </Link>
   ));
