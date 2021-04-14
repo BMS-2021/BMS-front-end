@@ -49,20 +49,22 @@ export interface BookData {
   stock: number;
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
   },
   container: {
     maxHeight: 440,
-    overflowX: 'auto',
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
   },
   paper: {
-    width: '100%',
-    overflowX: 'auto',
-    flexShrink: 0,
+    width: '90%',
+    marginTop: theme.spacing(2),
+    marginLeft: '5%',
   },
-});
+}));
 
 export default function BookTable({
   rows,
@@ -72,17 +74,13 @@ export default function BookTable({
   const classes = useStyles();
 
   return (
-    <Paper>
+    <Paper className={classes.paper}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow>
-              {columns.map(({ id, label, minWidth, maxWidth, align }) => (
-                <TableCell
-                  key={id}
-                  align={align}
-                  style={{ minWidth: minWidth, maxWidth: maxWidth }}
-                >
+              {columns.map(({ id, label, align }) => (
+                <TableCell key={id} align={align}>
                   {label}
                 </TableCell>
               ))}
@@ -91,12 +89,8 @@ export default function BookTable({
           <TableBody>
             {rows.map((row) => (
               <TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
-                {columns.map(({ id, minWidth, maxWidth, align }) => (
-                  <TableCell
-                    key={id}
-                    align={align}
-                    style={{ minWidth: minWidth, maxWidth: maxWidth }}
-                  >
+                {columns.map(({ id, align }) => (
+                  <TableCell key={id} align={align}>
                     {row[id]}
                   </TableCell>
                 ))}

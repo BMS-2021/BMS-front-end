@@ -2,7 +2,6 @@ import {
   Button,
   Grid,
   makeStyles,
-  Paper,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -10,10 +9,12 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import neofetch from '../../utils/neofetch';
 import BookTable, { BookData } from '../BookTable';
+import BookList from '../BookList';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexDirection: 'row',
+    paddingLeft: '5%',
   },
   filterGrid: {
     margin: theme.spacing(0, 0, 0),
@@ -104,7 +105,7 @@ export default function QueryBook(): React.ReactElement {
   const formGrid = inputBox.map(({ type, box }) => (
     <Grid container spacing={3} key={type} className={classes.filterGrid}>
       {box.map(({ name, label }) => (
-        <Grid item xs={3} className={classes.inline} key={name}>
+        <Grid item sm={3} className={classes.inline} key={name}>
           <TextField
             variant='outlined'
             id={name}
@@ -121,7 +122,7 @@ export default function QueryBook(): React.ReactElement {
 
   return (
     <>
-      <Grid container>
+      <Grid container className={classes.root}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container className={classes.titleGrid}>
             <Typography variant='h5'>筛选条件</Typography>
@@ -138,6 +139,7 @@ export default function QueryBook(): React.ReactElement {
         </form>
       </Grid>
       <BookTable rows={rows}></BookTable>
+      <BookList rows={rows}></BookList>
     </>
   );
 }
