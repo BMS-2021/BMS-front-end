@@ -17,6 +17,7 @@ import {
 import { useRouter } from 'next/router';
 import { Button } from '@material-ui/core';
 import { getUserStateContext } from '../utils/UserState';
+import { deepPurple } from '@material-ui/core/colors';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -42,6 +43,12 @@ const styles = (theme: Theme) =>
     button: {
       borderColor: lightColor,
     },
+    avatar: {
+      color: theme.palette.getContrastText(deepPurple[500]),
+      backgroundColor: deepPurple[500],
+      width: theme.spacing(5),
+      height: theme.spacing(5),
+    },
   });
 
 interface HeaderProps extends WithStyles<typeof styles> {
@@ -56,7 +63,7 @@ function Header(props: HeaderProps) {
 
   const router = useRouter();
 
-  const displayAvatar = state.username ?? '?';
+  const displayAvatar = (state.username ?? '?').toUpperCase();
   const tooltipText = state.username
     ? `Hello, ${state.username}`
     : 'Please login first!';
@@ -99,7 +106,11 @@ function Header(props: HeaderProps) {
                   color='inherit'
                   className={classes.iconButtonAvatar}
                 >
-                  <Avatar src={null} alt={displayAvatar} />
+                  <Avatar
+                    className={classes.avatar}
+                    src={displayAvatar}
+                    alt={displayAvatar}
+                  />
                 </IconButton>
               </Tooltip>
             </Grid>
