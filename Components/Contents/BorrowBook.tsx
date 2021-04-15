@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -56,10 +56,11 @@ export default function BorrowBook({
   actionUrl: string;
 }): ReactElement {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [cardIdInput, setCardIdInput] = React.useState('');
-  const [bookIdInput, setBookIdInput] = React.useState('');
-  const [bookRows, setBookRows] = React.useState<BookData[]>([]);
+  const [activeStep, setActiveStep] = useState(0);
+  const [cardIdInput, setCardIdInput] = useState('');
+  const [bookIdInput, setBookIdInput] = useState('');
+  const [bookRows, setBookRows] = useState<BookData[]>([]);
+  const [errorText, setErrorText] = useState('');
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -142,8 +143,15 @@ export default function BorrowBook({
         });
 
         if (!success) {
-          enqueueSnackbar(data as string);
-          throw data as string;
+          let date: Date;
+          try {
+            date = new Date(JSON.parse(data as string).time);
+          } catch (e) {
+            throw data as string;
+          }
+          throw `无库存~ 最近归还时间: 
+${date.getFullYear()}-${date.getMonth()}-${date.getDate()}
+${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
         } else {
           enqueueSnackbar('借书成功!');
           setBookIdInput('');
@@ -168,6 +176,7 @@ export default function BorrowBook({
       setIsErrorList((draft) => {
         draft.errors[activeStep] = false;
       });
+      setErrorText('');
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     } catch (e) {
       enqueueSnackbar(e);
@@ -221,6 +230,7 @@ export default function BorrowBook({
         ) : (
           <>
             {stepData[activeStep].content}
+            {errorText}
             <div className={classes.buttons}>
               <Button
                 disabled={activeStep === 0}
