@@ -53,8 +53,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function BorrowBook({
   actionUrl,
+  actionText,
 }: {
   actionUrl: string;
+  actionText: string;
 }): ReactElement {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
@@ -159,7 +161,7 @@ export default function BorrowBook({
 ${date.getFullYear()}-${date.getMonth()}-${date.getDate()}
 ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
         } else {
-          enqueueSnackbar('借书成功!');
+          enqueueSnackbar(`${actionText}书成功!`);
           setBookIdInput('');
           setCardIdInput('');
         }
@@ -228,9 +230,11 @@ ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
       <Paper elevation={3} className={classes.paper}>
         {activeStep === steps.length ? (
           <>
-            <Typography className={classes.instructions}>借书完成~</Typography>
+            <Typography className={classes.instructions}>
+              {actionText}书完成~
+            </Typography>
             <Button onClick={handleReset} className={classes.button}>
-              再借一本
+              再{actionText}一本
             </Button>
           </>
         ) : (

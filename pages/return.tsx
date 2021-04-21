@@ -7,7 +7,9 @@ export default function borrow(): ReactElement {
   return (
     <>
       <Template
-        ContentComponent={<BorrowBook actionUrl={'/return'} />}
+        ContentComponent={
+          <BorrowBook actionText={'还'} actionUrl={'/return'} />
+        }
         pageTitle={'归还图书'}
         loginRequired
       />
