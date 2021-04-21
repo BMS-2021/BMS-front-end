@@ -11,6 +11,7 @@ import { Paper } from '@material-ui/core';
 import BookTable, { BookData } from '../BookTable';
 import neofetch from '../../utils/neofetch';
 import { useSnackbar } from 'notistack';
+import BookList from '../BookList';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -116,7 +117,12 @@ export default function BorrowBook({
       okAction: async () => {
         if (bookIdInput.length < 1) throw '请输入书号';
       },
-      dataDisplay: <BookTable rows={bookRows} />,
+      dataDisplay: (
+        <>
+          <BookTable rows={bookRows} />
+          <BookList rows={bookRows} />
+        </>
+      ),
     },
     {
       name: '确认信息',

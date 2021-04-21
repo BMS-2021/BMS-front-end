@@ -2,6 +2,8 @@ import {
   Button,
   Grid,
   makeStyles,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -10,6 +12,8 @@ import { useForm } from 'react-hook-form';
 import neofetch from '../../utils/neofetch';
 import BookTable, { BookData } from '../BookTable';
 import BookList from '../BookList';
+import { useSnackbar } from 'notistack';
+import { useImmer } from 'use-immer';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +30,13 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 2, 3),
     padding: theme.spacing(0, 2, 0),
     justifyContent: 'space-between',
+  },
+  orderDiv: {
+    marginLeft: theme.spacing(6),
+  },
+  orderSelect: {
+    width: '15%',
+    margin: theme.spacing(3, 3, 3),
   },
 }));
 
@@ -50,56 +61,91 @@ const inputBox = [
   },
 ];
 
+interface filterColumns {
+  title?: string;
+  author?: string;
+  category?: string;
+  press?: string;
+  yearMin?: string; // should be numbers ↓
+  yearMax?: string;
+  priceMin?: string;
+  priceMax?: string;
+}
+
+interface fetchParams {
+  filter?: filterColumns;
+  orderColumn?: string;
+  orderDesc?: boolean;
+}
+
 export default function QueryBook(): React.ReactElement {
   const classes = useStyles();
   const [rows, setRows] = useState<BookData[]>([]);
+  const [queryParams, setQueryParams] = useImmer<fetchParams>({
+    orderColumn: 'id',
+  });
 
   const { handleSubmit, register } = useForm();
+  const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    (async () => {
-      const { success, data } = await neofetch({ url: '/books' });
-      if (!success) {
-        //TODO: solve get books error..
-      } else {
-        setRows(data as BookData[]);
+  const getBookRows = async ({
+    filter,
+    orderColumn,
+    orderDesc,
+  }: fetchParams) => {
+    console.log({ filter, orderColumn, orderDesc });
+
+    let queryUrl = '/books?';
+    for (const i of Object.entries(filter ?? {})) {
+      const [k, v] = i;
+      queryUrl += `${k}=${v}&`;
+    }
+    if (orderColumn) {
+      queryUrl += `order=${orderColumn}&`;
+      if (orderDesc !== undefined) {
+        queryUrl += `desc=${orderDesc}&`;
       }
-    })();
-  }, []);
-
-  const onSubmit = async (filterData: {
-    title?: string;
-    author?: string;
-    category?: string;
-    press?: string;
-    yearMin?: string; // should be numbers ↓
-    yearMax?: string;
-    priceMin?: string;
-    priceMax?: string;
-  }) => {
-    let queryUrl = '/books',
-      hasKey = false;
-
-    if (filterData) {
-      queryUrl += '?';
     }
 
-    Object.entries(filterData).forEach(([key, value]) => {
-      if (value) {
-        if (hasKey) queryUrl += '&';
-        queryUrl += `${key}=${value}`;
-        hasKey = true;
-      }
-    });
-
-    const { success, data } = await neofetch({
-      url: queryUrl,
-    });
+    const { success, data } = await neofetch({ url: queryUrl });
     if (!success) {
-      //TODO: solve get books error..
+      enqueueSnackbar(data as string);
     } else {
       setRows(data as BookData[]);
     }
+  };
+
+  useEffect(() => {
+    (async () => {
+      await getBookRows({});
+    })();
+  }, []);
+
+  const onSubmit = async (filterData: filterColumns) => {
+    setQueryParams((draft) => {
+      draft.filter = { ...filterData };
+    });
+
+    getBookRows({ filter: filterData, ...queryParams });
+  };
+
+  const updateRows = async ({
+    newColumn,
+    newDesc,
+  }: {
+    newColumn?: string;
+    newDesc?: boolean;
+  }) => {
+    setQueryParams((draft) => {
+      if (newColumn) {
+        draft.orderColumn = newColumn;
+      }
+      if (newDesc !== undefined) {
+        draft.orderDesc = newDesc;
+      }
+    });
+
+    // getBookRows(queryParams);
   };
 
   const formGrid = inputBox.map(({ type, box }) => (
@@ -120,6 +166,25 @@ export default function QueryBook(): React.ReactElement {
     </Grid>
   ));
 
+  const columnList = [
+    ['id', '默认'],
+    ['category', '类别'],
+    ['title', '书名'],
+    ['author', '作者'],
+    ['press', '出版社'],
+    ['year', '年份'],
+    ['price', '价格'],
+    ['total', '总量'],
+    ['stock', '库存'],
+  ].map((col) => {
+    const [id, name] = col;
+    return (
+      <MenuItem key={id} value={id}>
+        {name}
+      </MenuItem>
+    );
+  });
+
   return (
     <>
       <Grid container className={classes.root}>
@@ -138,6 +203,30 @@ export default function QueryBook(): React.ReactElement {
           {formGrid}
         </form>
       </Grid>
+      <div className={classes.orderDiv}>
+        <Select
+          className={classes.orderSelect}
+          id='column-select'
+          onChange={(e) => updateRows({ newColumn: e.target.value as string })}
+        >
+          {columnList}
+        </Select>
+        <Select
+          className={classes.orderSelect}
+          id='desc-select'
+          onChange={(e) => updateRows({ newDesc: e.target.value === 'true' })}
+        >
+          <MenuItem key={'t'} value={'true'}>
+            降序
+          </MenuItem>
+          <MenuItem key={'f'} value={'false'}>
+            升序
+          </MenuItem>
+        </Select>
+        <Button variant='outlined' onClick={() => getBookRows(queryParams)}>
+          排序
+        </Button>
+      </div>
       <BookTable rows={rows}></BookTable>
       <BookList rows={rows}></BookList>
     </>
