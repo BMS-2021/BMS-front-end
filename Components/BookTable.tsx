@@ -11,6 +11,7 @@ import { Paper } from '@material-ui/core';
 
 interface Column {
   id:
+    | 'id'
     | 'title'
     | 'author'
     | 'category'
@@ -27,6 +28,7 @@ interface Column {
 }
 
 const columns: Column[] = [
+  { id: 'id', label: '书号', minWidth: 100, maxWidth: 250 },
   { id: 'title', label: '书名', minWidth: 100, maxWidth: 250 },
   { id: 'author', label: '作者', minWidth: 70, maxWidth: 100 },
   { id: 'category', label: '类别' },

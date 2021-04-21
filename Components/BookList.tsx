@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BookListCell = ({
+  id,
   title,
   author,
   category,
@@ -73,6 +74,8 @@ const BookListCell = ({
 
   return (
     <TableCell>
+      <Typography className={classes.leftText}>{`#${id}`}</Typography>
+      <Typography className={classes.rightText}> </Typography>
       <Typography className={`${classes.leftText} ${classes.boldText}`}>
         {title}
       </Typography>

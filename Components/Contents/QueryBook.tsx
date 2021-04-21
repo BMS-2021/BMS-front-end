@@ -167,7 +167,7 @@ export default function QueryBook(): React.ReactElement {
   ));
 
   const columnList = [
-    ['id', '默认'],
+    ['id', '书号'],
     ['category', '类别'],
     ['title', '书名'],
     ['author', '作者'],
